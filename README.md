@@ -1,4 +1,4 @@
-# 🚛 TransitOps - Smart Transport Operations Platform
+# TransitOps - Smart Transport Operations Platform
 
 ![TransitOps Banner](https://img.shields.io/badge/TransitOps-Transport_OS-f59e0b?style=for-the-badge&logo=next.js&logoColor=black)
 
@@ -6,25 +6,26 @@
 
 ---
 
-## 📖 Table of Contents
-1. [Business Context & Objective](#-business-context--objective)
-2. [Role-Based Access Control (RBAC)](#-role-based-access-control-rbac)
-3. [Core Features & Modules](#-core-features--modules)
-4. [Strict Business Rules Enforced](#-strict-business-rules-enforced)
-5. [Bonus Features Implemented](#-bonus-features-implemented)
-6. [Tech Stack](#-tech-stack)
-7. [Getting Started (Local Development)](#-getting-started-local-development)
+## Table of Contents
+1. [Business Context & Objective](#business-context--objective)
+2. [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+3. [Core Features & Modules](#core-features--modules)
+4. [Strict Business Rules Enforced](#strict-business-rules-enforced)
+5. [Bonus Features Implemented](#bonus-features-implemented)
+6. [Tech Stack](#tech-stack)
+7. [Getting Started (Local Development)](#getting-started-local-development)
+8. [Production Deployment Guide](#production-deployment-guide)
 
 ---
 
-## 🎯 Business Context & Objective
+## Business Context & Objective
 Many logistics companies still rely on disparate tools to manage transport operations, leading to underutilized vehicles, missed maintenance, expired driver licenses, and poor operational visibility. 
 
 **Objective:** Build a centralized platform that seamlessly manages the complete lifecycle of transport operations—from vehicle acquisition and driver compliance to active dispatching, maintenance logging, and financial analytics.
 
 ---
 
-## 🔐 Role-Based Access Control (RBAC)
+## Role-Based Access Control (RBAC)
 TransitOps implements secure email/password authentication using JWTs and features strict route and API protection based on four distinct user personas:
 
 | Role | Responsibilities & Access |
@@ -36,65 +37,65 @@ TransitOps implements secure email/password authentication using JWTs and featur
 
 ---
 
-## 🚀 Core Features & Modules
+## Core Features & Modules
 
-### 📊 1. Command Dashboard
-- Displays real-time KPIs: *Active Vehicles, Available Vehicles, Vehicles in Maintenance, Active Trips, Pending Trips, Drivers On Duty, and Fleet Utilization (%).*
-- Dynamic global filtering by **Vehicle Type**, **Status**, and **Region**.
+### 1. Command Dashboard
+- Displays real-time KPIs: Active Vehicles, Available Vehicles, Vehicles in Maintenance, Active Trips, Pending Trips, Drivers On Duty, and Fleet Utilization (%).
+- Dynamic global filtering by Vehicle Type, Status, and Region.
 
-### 🚙 2. Vehicle Registry
+### 2. Vehicle Registry
 - Master list of fleet assets tracking Registration Number, Model, Type, Max Load Capacity (kg), Odometer, Acquisition Cost, and Status.
-- **Dynamic Statuses:** `Available`, `On Trip`, `In Shop`, `Retired`.
+- Dynamic Statuses: Available, On Trip, In Shop, Retired.
 
-### 👨‍✈️ 3. Driver Compliance & Management
+### 3. Driver Compliance & Management
 - Driver profiles tracking License Category, Expiry Date, Contact Info, and Safety Score (0-100).
-- **Dynamic Statuses:** `Available`, `On Trip`, `Off Duty`, `Suspended`.
+- Dynamic Statuses: Available, On Trip, Off Duty, Suspended.
 
-### 🛣️ 4. Trip Dispatching & State Machine
+### 4. Trip Dispatching & State Machine
 - Complex trip creation requiring Source, Destination, Vehicle, Driver, Cargo Weight, and Distance.
-- **Trip Lifecycle:** `Draft` ➔ `Dispatched` ➔ `Completed` ➔ `Cancelled`.
+- Trip Lifecycle: Draft -> Dispatched -> Completed -> Cancelled.
 
-### 🔧 5. Maintenance Shop
+### 5. Maintenance Shop
 - Comprehensive maintenance logging for vehicles.
-- Creating an active maintenance ticket automatically locks the vehicle in the `In Shop` status.
+- Creating an active maintenance ticket automatically locks the vehicle in the In Shop status.
 
-### ⛽ 6. Fuel & Expense Tracking
+### 6. Fuel & Expense Tracking
 - Granular tracking of fuel consumption (liters, cost per liter) and external expenses (tolls, insurance, repairs).
 - Automatically computes the Total Operational Cost per vehicle.
 
-### 📈 7. ROI Reports & Financial Analytics
-- Auto-calculates metrics like Fuel Efficiency, Operational Cost, and **Vehicle ROI** `[Revenue - (Maintenance + Fuel) / Acquisition Cost]`.
-- Features single-click **CSV Exports**.
+### 7. ROI Reports & Financial Analytics
+- Auto-calculates metrics like Fuel Efficiency, Operational Cost, and Vehicle ROI [Revenue - (Maintenance + Fuel) / Acquisition Cost].
+- Features single-click CSV Exports.
 
 ---
 
-## 🛑 Strict Business Rules Enforced
+## Strict Business Rules Enforced
 TransitOps is built with a bulletproof backend state machine that guarantees data integrity:
 1. **Unique Identification:** Vehicle Registration Numbers and Driver License Numbers are strictly unique.
-2. **Dispatch Locks:** `Retired` or `In Shop` vehicles can **never** appear in the dispatch selection pool.
-3. **Compliance Locks:** Drivers with expired licenses or `Suspended` status are automatically blocked from trip assignments.
-4. **Atomic Trip States:** A driver or vehicle already marked `On Trip` cannot be double-booked for another trip.
-5. **Payload Validation:** Cargo Weight entered during dispatch **must not exceed** the selected vehicle's Maximum Load Capacity.
+2. **Dispatch Locks:** Retired or In Shop vehicles can never appear in the dispatch selection pool.
+3. **Compliance Locks:** Drivers with expired licenses or Suspended status are automatically blocked from trip assignments.
+4. **Atomic Trip States:** A driver or vehicle already marked On Trip cannot be double-booked for another trip.
+5. **Payload Validation:** Cargo Weight entered during dispatch must not exceed the selected vehicle's Maximum Load Capacity.
 6. **Auto-Transitions:** 
-   - Dispatching a trip instantly changes both the Vehicle and Driver status to `On Trip`.
-   - Completing a trip updates the odometer, logs fuel, and restores entities to `Available`.
-   - Cancelling a trip aborts the dispatch and restores entities to `Available`.
-7. **Maintenance Locks:** Opening an active maintenance record forces the vehicle status to `In Shop`. Closing the ticket restores it to `Available`.
+   - Dispatching a trip instantly changes both the Vehicle and Driver status to On Trip.
+   - Completing a trip updates the odometer, logs fuel, and restores entities to Available.
+   - Cancelling a trip aborts the dispatch and restores entities to Available.
+7. **Maintenance Locks:** Opening an active maintenance record forces the vehicle status to In Shop. Closing the ticket restores it to Available.
 
 ---
 
-## ✨ Bonus Features Implemented
+## Bonus Features Implemented
 Beyond the mandatory requirements, this project includes the following advanced capabilities:
-- ✅ **PDF Export Generation:** Financial Analysts can download highly detailed, stylized PDF Audit Reports generated dynamically on the client side using `jsPDF`.
-- ✅ **Automated Email Reminders:** Includes a Cron-ready API endpoint (`/api/cron/check-licenses`) integrated with **Nodemailer**. Automatically scans for expiring driver licenses and dispatches HTML warning emails to both the Driver and the Safety Officer.
-- ✅ **Dark Mode / Glassmorphism UI:** A stunning, premium aesthetic featuring dark themes, mesh gradients, and smooth micro-animations.
-- ✅ **Advanced Data Tables:** Includes universal search, filtering, and sorting capabilities across all modules.
-- ✅ **Responsive Web Interface:** Flawless mobile optimization with a collapsable mobile sidebar and responsive data grids.
-- ✅ **Data Visualization:** Built-in dynamic charts and KPI gauge visualizations.
+- **PDF Export Generation:** Financial Analysts can download highly detailed, stylized PDF Audit Reports generated dynamically on the client side using jsPDF.
+- **Automated Email Reminders:** Includes a Cron-ready API endpoint (/api/cron/check-licenses) integrated with Nodemailer. Automatically scans for expiring driver licenses and dispatches HTML warning emails to both the Driver and the Safety Officer.
+- **Dark Mode / Glassmorphism UI:** A stunning, premium aesthetic featuring dark themes, mesh gradients, and smooth micro-animations.
+- **Advanced Data Tables:** Includes universal search, filtering, and sorting capabilities across all modules.
+- **Responsive Web Interface:** Flawless mobile optimization with a collapsable mobile sidebar and responsive data grids.
+- **Data Visualization:** Built-in dynamic charts and KPI gauge visualizations.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS + Vanilla CSS Modules
@@ -104,12 +105,12 @@ Beyond the mandatory requirements, this project includes the following advanced 
 - **UI Components:** Radix UI / Custom Glassmorphism Components
 - **Icons:** Lucide React
 - **PDF Generation:** jsPDF + jspdf-autotable
-- **Email Delivery:** Nodemailer (Ethereal for testing)
+- **Email Delivery:** Nodemailer (Ethereal for testing / standard SMTP for production)
 - **Forms & Validation:** React Hook Form + Zod
 
 ---
 
-## 💻 Getting Started (Local Development)
+## Getting Started (Local Development)
 
 ### Prerequisites
 - Node.js 18+
@@ -119,7 +120,7 @@ Beyond the mandatory requirements, this project includes the following advanced 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/soham04010/TransitOps.git
+   git clone https://github.com/soham04010/TransitOps
    cd transitops
    ```
 
@@ -133,12 +134,6 @@ Beyond the mandatory requirements, this project includes the following advanced 
    ```env
    DATABASE_URL="postgresql://user:password@localhost:5432/transitops"
    JWT_SECRET="your-super-secret-jwt-key"
-   
-   # Optional: Real SMTP Configuration for Emails (Defaults to Ethereal Mock if omitted)
-   # SMTP_HOST="smtp.gmail.com"
-   # SMTP_PORT=587
-   # SMTP_USER="your-email@gmail.com"
-   # SMTP_PASS="your-app-password"
    ```
 
 4. **Initialize the Database**
@@ -152,8 +147,77 @@ Beyond the mandatory requirements, this project includes the following advanced 
    npm run dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
 ---
-*Built with ❤️ for the Hackathon.*
 
+## Production Deployment Guide
+
+TransitOps is designed to be easily deployed to modern cloud infrastructure. The recommended stack for production is **Vercel** (for hosting the Next.js application) and a managed PostgreSQL provider like **Neon, Supabase, or AWS RDS** (for the database).
+
+### Step 1: Database Provisioning
+For production, you should avoid using `prisma db push` and instead use Prisma Migrations to safely track schema changes.
+1. Provision a PostgreSQL database (e.g., using Neon serverless Postgres).
+2. Obtain both the connection string (with connection pooling) and the direct connection string.
+
+### Step 2: Configure Environment Variables
+You will need to set the following environment variables in your hosting provider's dashboard (e.g., Vercel Project Settings):
+
+```env
+# The connection string for querying the database (often uses a connection pooler like PgBouncer)
+DATABASE_URL="postgres://user:password@pooler-host.com/db?pgbouncer=true&connect_timeout=15"
+
+# The direct connection string used strictly for applying schema migrations
+DIRECT_URL="postgres://user:password@direct-host.com/db"
+
+# Security key for signing JWTs
+JWT_SECRET="a-very-long-secure-random-string-for-production"
+
+# Your production domain (used for absolute URLs)
+NEXT_PUBLIC_APP_URL="https://your-production-domain.com"
+
+# SMTP Settings for Automated Emails
+SMTP_HOST="smtp.sendgrid.net"
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER="apikey"
+SMTP_PASS="your-sendgrid-or-ses-api-key"
+```
+
+### Step 3: Preparing Prisma for Production
+To ensure your database migrations run automatically when deploying to Vercel, you should update the `package.json` build script. TransitOps uses Prisma, so before the Next.js build runs, the database schema must be applied.
+
+Ensure your `package.json` scripts look like this:
+```json
+"scripts": {
+  "postinstall": "prisma generate",
+  "build": "prisma migrate deploy && next build",
+  "dev": "next dev",
+  "start": "next start"
+}
+```
+*Note: `prisma migrate deploy` safely applies pending migrations to your production database without resetting data, unlike `prisma db push`.*
+
+### Step 4: Deploying to Vercel
+1. Push your code to a GitHub repository.
+2. Log into Vercel and create a **New Project**.
+3. Import your GitHub repository.
+4. Expand the **Environment Variables** section and paste the variables from Step 2.
+5. Click **Deploy**. Vercel will automatically run the `postinstall` script to generate the Prisma Client, run `prisma migrate deploy` to update the database, and then build the Next.js app.
+
+### Step 5: Configuring the License Expiry Cron Job
+TransitOps includes a built-in automated background task (`/api/cron/check-licenses`) that scans for expiring driver licenses and sends email alerts. Next.js does not run a continuous background server, so you must use an external cron service to trigger this endpoint.
+
+**Using Vercel Cron:**
+Create a `vercel.json` file in the root of your project:
+```json
+{
+  "crons": [
+    {
+      "path": "/api/cron/check-licenses",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
+```
+This configuration tells Vercel to automatically send a POST request to `/api/cron/check-licenses` every day at 8:00 AM UTC.
+
+*Security Note:* In a true production environment, you should protect the cron endpoint by checking for an authorization header (e.g., verifying a `CRON_SECRET` environment variable) to ensure unauthorized users cannot manually trigger the email blasts.
