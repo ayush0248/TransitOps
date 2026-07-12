@@ -71,6 +71,19 @@ export const expenseSchema = z.object({
   description: z.string().optional(),
 });
 
+// Update Schemas
+export const vehicleUpdateSchema = vehicleSchema.partial();
+
+export const driverUpdateSchema = driverSchema.partial();
+
+export const tripUpdateSchema = tripSchema.partial();
+
+export const maintenanceUpdateSchema = maintenanceSchema.partial();
+
+export const fuelLogUpdateSchema = fuelLogSchema.partial();
+
+export const expenseUpdateSchema = expenseSchema.partial();
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type VehicleInput = z.infer<typeof vehicleSchema>;
@@ -79,3 +92,16 @@ export type TripInput = z.infer<typeof tripSchema>;
 export type MaintenanceInput = z.infer<typeof maintenanceSchema>;
 export type FuelLogInput = z.infer<typeof fuelLogSchema>;
 export type ExpenseInput = z.infer<typeof expenseSchema>;
+
+
+export type VehicleUpdateInput = z.infer<typeof vehicleUpdateSchema>;
+
+export type DriverUpdateInput = z.infer<typeof driverUpdateSchema>;
+
+export type TripUpdateInput = z.infer<typeof tripUpdateSchema>;
+
+export type MaintenanceUpdateInput = z.infer<typeof maintenanceUpdateSchema>;
+
+export type FuelLogUpdateInput = z.infer<typeof fuelLogUpdateSchema>;
+
+export type ExpenseUpdateInput = z.infer<typeof expenseUpdateSchema>;

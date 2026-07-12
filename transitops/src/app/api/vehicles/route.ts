@@ -5,34 +5,109 @@ import { vehicleSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
   try {
-    const vehicles = await db.vehicle.findMany({
-      orderBy: { createdAt: "desc" },
-    }).catch(() => []);
-    return sendSuccess(vehicles, "Vehicles retrieved successfully.", 200);
+    const { searchParams } = new URL(request.url);
+
+    const search = searchParams.get("search") || "";
+    const status = searchParams.get("status") || "";
+    const type = searchParams.get("type") || "";
+    const region = searchParams.get("region") || "";
+
+    const page = Number(searchParams.get("page") || 1);
+    const limit = Number(searchParams.get("limit") || 10);
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        {
+          registrationNumber: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ];
+    }
+
+    if (status) where.status = status;
+    if (type) where.type = type;
+    if (region) where.region = region;
+
+    const [vehicles, total] = await Promise.all([
+      db.vehicle.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      db.vehicle.count({
+        where,
+      }),
+    ]);
+
+    return sendSuccess(
+      {
+        vehicles,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
+      "Vehicles retrieved successfully.",
+      200
+    );
   } catch (error: any) {
-    return sendError(error.message || "Failed to fetch vehicles.", "INTERNAL_SERVER_ERROR", 500);
+    return sendError(
+      error.message || "Failed to fetch vehicles.",
+      "INTERNAL_SERVER_ERROR",
+      500
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validationResult = vehicleSchema.safeParse(body);
 
-    if (!validationResult.success) {
-      const errorMessage = validationResult.error.issues.map((e) => e.message).join(", ");
-      return sendError(errorMessage, "VALIDATION_ERROR", 400, validationResult.error.flatten());
+    const validation = vehicleSchema.safeParse(body);
+
+    if (!validation.success) {
+      return sendError(
+        validation.error.issues.map((e) => e.message).join(", "),
+        "VALIDATION_ERROR",
+        400,
+        validation.error.flatten()
+      );
     }
 
-    const newVehicle = await db.vehicle.create({
-      data: validationResult.data,
+    const vehicle = await db.vehicle.create({
+      data: validation.data,
     });
 
-    return sendSuccess(newVehicle, "Vehicle registered successfully.", 201);
+    return sendSuccess(vehicle, "Vehicle created successfully.", 201);
   } catch (error: any) {
     if (error.code === "P2002") {
-      return sendError("Vehicle registration number already exists.", "DUPLICATE_REGISTRATION", 409);
+      return sendError(
+        "Registration number already exists.",
+        "DUPLICATE_REGISTRATION",
+        409
+      );
     }
-    return sendError(error.message || "Failed to create vehicle.", "INTERNAL_SERVER_ERROR", 500);
+
+    return sendError(
+      error.message || "Failed to create vehicle.",
+      "INTERNAL_SERVER_ERROR",
+      500
+    );
   }
 }
