@@ -32,7 +32,11 @@ export function CreateTripModal({ isOpen, onClose }: CreateTripModalProps) {
   const dispatchMutation = useDispatchTrip();
   const [shouldDispatchImmediately, setShouldDispatchImmediately] = useState<boolean>(false);
 
-  const { data: availableVehicles = [], isLoading: loadingVehicles } = useVehicles({ status: "available" });
+  const { data: vehiclesData, vehicles: availableVehiclesList = [], isLoading: loadingVehicles } = useVehicles({ status: "available" });
+  const availableVehicles = Array.isArray(availableVehiclesList) && availableVehiclesList.length > 0
+    ? availableVehiclesList
+    : (Array.isArray(vehiclesData) ? vehiclesData : (vehiclesData?.vehicles ?? []));
+
   const { data: availableDrivers = [], isLoading: loadingDrivers } = useDrivers({ status: "available" });
 
   const now = new Date();

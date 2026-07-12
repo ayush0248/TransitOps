@@ -12,7 +12,11 @@ interface CreateMaintenanceModalProps {
 }
 
 export function CreateMaintenanceModal({ isOpen, onClose }: CreateMaintenanceModalProps) {
-  const { data: vehicles = [] } = useVehicles();
+  const { data: vehiclesData, vehicles: vehiclesList = [] } = useVehicles();
+  const vehicles = Array.isArray(vehiclesList) && vehiclesList.length > 0
+    ? vehiclesList
+    : (Array.isArray(vehiclesData) ? vehiclesData : (vehiclesData?.vehicles ?? []));
+
   const createMutation = useCreateMaintenance();
 
   const [vehicleId, setVehicleId] = useState("");

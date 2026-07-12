@@ -12,7 +12,11 @@ interface CreateExpenseModalProps {
 }
 
 export function CreateExpenseModal({ isOpen, onClose }: CreateExpenseModalProps) {
-  const { data: vehicles = [] } = useVehicles();
+  const { data: vehiclesData, vehicles: vehiclesList = [] } = useVehicles();
+  const vehicles = Array.isArray(vehiclesList) && vehiclesList.length > 0
+    ? vehiclesList
+    : (Array.isArray(vehiclesData) ? vehiclesData : (vehiclesData?.vehicles ?? []));
+
   const createMutation = useCreateExpense();
 
   const [vehicleId, setVehicleId] = useState("");

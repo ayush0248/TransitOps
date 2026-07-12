@@ -15,13 +15,15 @@ import { useUpdateVehicle } from "@/hooks/useUpdateVehicle";
 import { useDeleteVehicle } from "@/hooks/useDeleteVehicle";
 
 export default function VehiclesPage() {
-  const { data, isLoading } = useVehicles();
+  const { data, vehicles: vehiclesList = [], isLoading } = useVehicles();
 
   const createVehicle = useCreateVehicle();
   const updateVehicle = useUpdateVehicle();
   const deleteVehicle = useDeleteVehicle();
 
-const vehicles: Vehicle[] = data?.vehicles ?? [];
+  const vehicles: Vehicle[] = Array.isArray(vehiclesList) && vehiclesList.length > 0
+    ? vehiclesList
+    : (Array.isArray(data) ? data : (data?.vehicles ?? []));
 
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -32,8 +34,7 @@ const vehicles: Vehicle[] = data?.vehicles ?? [];
 
   const [search, setSearch] = useState("");
 
-  console.log(vehicles);
-console.log(Array.isArray(vehicles));
+
 
 const filteredVehicles = vehicles.filter((vehicle) => {
   return (

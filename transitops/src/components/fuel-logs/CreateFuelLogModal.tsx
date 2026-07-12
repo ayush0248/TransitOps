@@ -12,7 +12,11 @@ interface CreateFuelLogModalProps {
 }
 
 export function CreateFuelLogModal({ isOpen, onClose }: CreateFuelLogModalProps) {
-  const { data: vehicles = [] } = useVehicles();
+  const { data: vehiclesData, vehicles: vehiclesList = [] } = useVehicles();
+  const vehicles = Array.isArray(vehiclesList) && vehiclesList.length > 0
+    ? vehiclesList
+    : (Array.isArray(vehiclesData) ? vehiclesData : (vehiclesData?.vehicles ?? []));
+
   const createMutation = useCreateFuelLog();
 
   const [vehicleId, setVehicleId] = useState("");
