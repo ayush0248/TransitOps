@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 import db from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/response";
 import { driverSchema } from "@/lib/validations";
+import { getAuthUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,6 +19,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const authUser = getAuthUser(request);
+    if (!authUser || (authUser.role !== "safety_officer" && authUser.role !== "fleet_manager")) {
+      return sendError("Forbidden. Only Safety Officers or Fleet Managers can register new drivers.", "FORBIDDEN", 403);
+    }
+
     const body = await request.json();
     const validationResult = driverSchema.safeParse(body);
 

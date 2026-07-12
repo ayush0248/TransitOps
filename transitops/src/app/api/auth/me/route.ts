@@ -3,6 +3,8 @@ import { getAuthUser } from "@/lib/auth";
 import { AuthService } from "@/services/auth.service";
 import { sendSuccess, sendError } from "@/lib/response";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const payload = getAuthUser(request);

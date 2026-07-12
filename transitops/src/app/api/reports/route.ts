@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import db from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/response";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const vehicles = await db.vehicle.findMany({
