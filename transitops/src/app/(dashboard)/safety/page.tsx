@@ -21,6 +21,7 @@ import {
   ArrowRight,
   Wrench,
   TrendingUp,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -33,8 +34,36 @@ export default function SafetyOfficerPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [driverToEdit, setDriverToEdit] = useState<Driver | null>(null);
+  const [isRunningCron, setIsRunningCron] = useState<boolean>(false);
 
   const { data: drivers = [], isLoading, refetch, isRefetching } = useDrivers();
+
+  const handleRunCron = async () => {
+    setIsRunningCron(true);
+    try {
+      const res = await fetch("/api/cron/check-licenses", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`License check complete. Sent ${data.data?.emailsSent || 0} emails.`);
+        if (data.data?.results && data.data.results.length > 0) {
+          data.data.results.forEach((r: any) => {
+            if (r.previewUrl) {
+              console.log(`[Ethereal] Email to ${r.driver}:`, r.previewUrl);
+              toast.info(`Email sent for ${r.driver}. Check browser console for URL.`, {
+                duration: 8000,
+              });
+            }
+          });
+        }
+      } else {
+        toast.error(data.message || "Failed to run check.");
+      }
+    } catch (err: any) {
+      toast.error("Failed to trigger cron endpoint.");
+    } finally {
+      setIsRunningCron(false);
+    }
+  };
 
   const now = new Date();
 
@@ -127,6 +156,14 @@ export default function SafetyOfficerPage() {
         </div>
         <div className="flex items-center gap-3">
           <button
+            onClick={handleRunCron}
+            disabled={isRunningCron}
+            className="px-4 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-zinc-950 font-black text-sm transition flex items-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50"
+          >
+            <Mail className={`w-4 h-4 ${isRunningCron ? "animate-pulse" : ""}`} />
+            <span>{isRunningCron ? "Sending..." : "Run Expiry Check"}</span>
+          </button>
+          <button
             onClick={() => refetch()}
             disabled={isRefetching}
             className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition flex items-center gap-2 text-sm font-bold font-mono"
@@ -136,7 +173,7 @@ export default function SafetyOfficerPage() {
           </button>
           <Link
             href="/drivers"
-            className="px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm transition flex items-center gap-2 font-mono border border-zinc-700"
+            className="px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm transition flex items-center gap-2 font-mono border border-zinc-700 hidden lg:flex"
           >
             <Users className="w-4 h-4 text-amber-400" />
             <span>Full Driver Roster</span>
