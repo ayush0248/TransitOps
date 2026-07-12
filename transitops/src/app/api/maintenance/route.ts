@@ -3,6 +3,8 @@ import db from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/response";
 import { maintenanceSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const logs = await db.maintenanceLog.findMany({
@@ -25,11 +27,22 @@ export async function POST(request: NextRequest) {
       return sendError(errorMessage, "VALIDATION_ERROR", 400, validationResult.error.flatten());
     }
 
-    const newLog = await db.maintenanceLog.create({
-      data: validationResult.data,
+    const newLog = await db.$transaction(async (tx) => {
+      const log = await tx.maintenanceLog.create({
+        data: validationResult.data,
+      });
+
+      if (validationResult.data.status === "active") {
+        await tx.vehicle.update({
+          where: { id: validationResult.data.vehicleId },
+          data: { status: "in_shop" },
+        });
+      }
+
+      return log;
     });
 
-    return sendSuccess(newLog, "Maintenance log created successfully.", 201);
+    return sendSuccess(newLog, "Maintenance log created and vehicle placed In Shop.", 201);
   } catch (error: any) {
     return sendError(error.message || "Failed to create maintenance log.", "INTERNAL_SERVER_ERROR", 500);
   }

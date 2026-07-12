@@ -4,6 +4,8 @@ import { AuthService } from "@/services/auth.service";
 import { sendSuccess, sendError } from "@/lib/response";
 import { AUTH_COOKIE_NAME } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

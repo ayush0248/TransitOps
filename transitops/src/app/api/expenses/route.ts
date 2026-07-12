@@ -3,6 +3,8 @@ import db from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/response";
 import { expenseSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const expenses = await db.expense.findMany({
