@@ -197,7 +197,7 @@ export function CreateTripModal({ isOpen, onClose }: CreateTripModalProps) {
               {...register("vehicleId")}
               className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
             >
-              <option value="">-- Choose Available Vehicle (`GET /api/vehicles?status=available`) --</option>
+              <option value="">-- Choose Available Vehicle --</option>
               {availableVehicles.map((v) => (
                 <option key={v.id} value={v.id}>
                   [{v.registrationNumber}] {v.name} ({v.type}) | Max Capacity: {v.maxLoadCapacity} kg
@@ -241,7 +241,7 @@ export function CreateTripModal({ isOpen, onClose }: CreateTripModalProps) {
               {...register("driverId")}
               className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
             >
-              <option value="">-- Choose Valid Driver (`status=available` & license not expired) --</option>
+              <option value="">-- Choose Valid Driver --</option>
               {validDrivers.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name} ({d.licenseCategory}) | Exp: {new Date(d.licenseExpiryDate).toISOString().split("T")[0]} | Score: {d.safetyScore}
@@ -258,7 +258,7 @@ export function CreateTripModal({ isOpen, onClose }: CreateTripModalProps) {
                 <span>Dispatch Immediately upon Creation?</span>
               </div>
               <p className="text-[11px] text-zinc-400">
-                If checked, executes atomic transaction (`POST /api/trips/:id/dispatch`) immediately.
+                If checked, executes dispatch operation immediately.
               </p>
             </div>
             <input

@@ -308,7 +308,7 @@ export function DriverFormModal({ isOpen, onClose, driverToEdit }: DriverFormMod
               <span>Safety Compliance Rule Enforcement:</span>
             </div>
             <p className="text-[11px] leading-relaxed">
-              Drivers marked as <strong className="text-red-400 font-mono">Suspended</strong> or whose <strong className="text-red-400 font-mono">License Expiry Date</strong> has passed will be automatically rejected by the Dispatch state machine during trip allocation (`POST /api/trips/:id/dispatch`).
+              Drivers marked as <strong className="text-red-400 font-mono">Suspended</strong> or whose <strong className="text-red-400 font-mono">License Expiry Date</strong> has passed will be automatically rejected by the Dispatch state machine during trip allocation.
             </p>
           </div>
 

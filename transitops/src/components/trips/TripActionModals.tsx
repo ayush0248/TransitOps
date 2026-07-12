@@ -203,7 +203,7 @@ export function CompleteTripModal({ isOpen, onClose, trip }: CompleteTripModalPr
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
-                Fuel Cost (₹/$)
+                Fuel Cost (₹)
               </label>
               <input
                 type="number"
