@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { ROLE_LABELS, ROLE_SCOPES } from "@/lib/constants";
-import { Car, ShieldCheck, Truck, Users, Wrench, Fuel, Receipt, BarChart3 } from "lucide-react";
+import { Car, ShieldCheck, Truck, Users, Wrench, Fuel, Receipt, BarChart3, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardOverviewPage() {
@@ -72,7 +72,18 @@ export default function DashboardOverviewPage() {
       {/* Quick Navigation Cards */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-white font-serif">Quick Module Navigation</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            href="/safety"
+            className="p-5 rounded-xl bg-gradient-to-br from-amber-500/10 to-zinc-900/60 hover:bg-zinc-900 border border-amber-500/30 hover:border-amber-500 transition group space-y-2 shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-amber-400 transition">Safety Audit Center</h3>
+            <p className="text-xs text-zinc-400">Audit driver compliance (`0-100 pts`), inspect license expirations (`HMV`/`LMV`), and enforce suspensions.</p>
+          </Link>
+
           <Link
             href="/vehicles"
             className="p-5 rounded-xl bg-zinc-900/40 hover:bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 transition group space-y-2"

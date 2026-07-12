@@ -25,12 +25,13 @@ import {
 
 const NAV_ITEMS = [
   { label: "Dashboard Overview", href: "/dashboard", icon: Grid, roles: ["all"] },
-  { label: "Fleet Vehicles", href: "/vehicles", icon: Car, roles: ["fleet_manager", "driver_user", "financial_analyst"] },
+  { label: "Safety Audit Center", href: "/safety", icon: ShieldAlert, roles: ["fleet_manager", "safety_officer"] },
+  { label: "Fleet Vehicles", href: "/vehicles", icon: Car, roles: ["fleet_manager", "driver_user", "financial_analyst", "safety_officer"] },
   { label: "Drivers & Compliance", href: "/drivers", icon: Users, roles: ["fleet_manager", "safety_officer", "driver_user"] },
-  { label: "Trip Dispatching", href: "/trips", icon: ChevronRight, roles: ["fleet_manager", "driver_user"] },
-  { label: "Maintenance Shop", href: "/maintenance", icon: Wrench, roles: ["fleet_manager"] },
-  { label: "Fuel Consumption", href: "/fuel-logs", icon: Fuel, roles: ["fleet_manager", "financial_analyst"] },
-  { label: "Expenses & Tolls", href: "/expenses", icon: Receipt, roles: ["fleet_manager", "financial_analyst"] },
+  { label: "Trip Dispatching", href: "/trips", icon: ChevronRight, roles: ["fleet_manager", "driver_user", "safety_officer"] },
+  { label: "Maintenance Shop", href: "/maintenance", icon: Wrench, roles: ["fleet_manager", "driver_user", "safety_officer", "financial_analyst"] },
+  { label: "Fuel Consumption", href: "/fuel-logs", icon: Fuel, roles: ["fleet_manager", "financial_analyst", "driver_user"] },
+  { label: "Expenses & Tolls", href: "/expenses", icon: Receipt, roles: ["fleet_manager", "financial_analyst", "driver_user"] },
   { label: "ROI & Analytics Reports", href: "/reports", icon: BarChart3, roles: ["fleet_manager", "financial_analyst", "safety_officer"] },
   { label: "System Settings", href: "/settings", icon: Settings, roles: ["all"] },
 ];
@@ -103,7 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono">
               Operations Menu
             </p>
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.filter((item) => item.roles.includes("all") || item.roles.includes(userRole)).map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
               const Icon = item.icon;
               return (

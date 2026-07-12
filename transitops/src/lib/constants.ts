@@ -17,7 +17,7 @@ export const ROLE_SCOPES: Record<Role, string> = {
 export const DEFAULT_DASHBOARD_ROUTE: Record<Role, string> = {
   fleet_manager: "/vehicles",
   driver_user: "/trips",
-  safety_officer: "/drivers",
+  safety_officer: "/safety",
   financial_analyst: "/reports",
 };
 
