@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+}
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
+
+enum Role {
+  fleet_manager
+  driver_user
+  safety_officer
+  financial_analyst
+}
+
+enum VehicleStatus {
+  available
+  on_trip
+  in_shop
+  retired
+}
+
+enum DriverStatus {
+  available
+  on_trip
+  off_duty
+  suspended
+}
+
+enum TripStatus {
+  draft
+  dispatched
+  completed
+  cancelled
+}
+
+enum MaintenanceStatus {
+  active
+  closed
+}
+
+enum ExpenseType {
+  maintenance
+  toll
+  insurance
+  repair
+  other
+}
+
+//////////////////////////////////////////////////////
+// USERS
+//////////////////////////////////////////////////////
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  role          Role
+
+  createdTrips  Trip[]   @relation("TripCreator")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("users")
+}
+
+//////////////////////////////////////////////////////
+// VEHICLES
+//////////////////////////////////////////////////////
+
+model Vehicle {
+  id                   String          @id @default(uuid())
+
+  registrationNumber   String          @unique
+  name                 String
+  model                String?
+  type                 String
+
+  maxLoadCapacity      Decimal
+
+  odometer             Decimal         @default(0)
+
+  acquisitionCost      Decimal
+
+  revenue              Decimal         @default(0)
+
+  region               String?
+
+  status               VehicleStatus   @default(available)
+
+  trips                Trip[]
+
+  maintenanceLogs      MaintenanceLog[]
+
+  fuelLogs             FuelLog[]
+
+  expenses             Expense[]
+
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  @@map("vehicles")
+}
+
+//////////////////////////////////////////////////////
+// DRIVERS
+//////////////////////////////////////////////////////
+
+model Driver {
+
+  id                  String          @id @default(uuid())
+
+  name                String
+
+  licenseNumber       String          @unique
+
+  licenseCategory     String
+
+  licenseExpiryDate   DateTime
+
+  contactNumber       String?
+
+  safetyScore         Int             @default(100)
+
+  status              DriverStatus    @default(available)
+
+  trips               Trip[]
+
+  createdAt           DateTime        @default(now())
+
+  updatedAt           DateTime        @updatedAt
+
+  @@map("drivers")
+}
+
+//////////////////////////////////////////////////////
+// TRIPS
+//////////////////////////////////////////////////////
+
+model Trip {
+
+  id                  String      @id @default(uuid())
+
+  source              String
+
+  destination         String
+
+  cargoWeight         Decimal
+
+  plannedDistance     Decimal
+
+  actualDistance      Decimal?
+
+  fuelConsumed        Decimal?
+
+  status              TripStatus @default(draft)
+
+  dispatchedAt        DateTime?
+
+  completedAt         DateTime?
+
+  cancelledAt         DateTime?
+
+  vehicleId           String
+
+  vehicle             Vehicle @relation(fields: [vehicleId], references: [id])
+
+  driverId            String
+
+  driver              Driver @relation(fields: [driverId], references: [id])
+
+  createdById         String
+
+  createdBy           User @relation("TripCreator", fields: [createdById], references: [id])
+
+  fuelLogs            FuelLog[]
+
+  createdAt           DateTime @default(now())
+
+  updatedAt           DateTime @updatedAt
+
+  @@map("trips")
+}
+
+//////////////////////////////////////////////////////
+// MAINTENANCE
+//////////////////////////////////////////////////////
+
+model MaintenanceLog {
+
+  id               String      @id @default(uuid())
+
+  vehicleId        String
+
+  vehicle          Vehicle @relation(fields: [vehicleId], references: [id])
+
+  description      String
+
+  cost             Decimal
+
+  status           MaintenanceStatus @default(active)
+
+  startedAt        DateTime @default(now())
+
+  closedAt         DateTime?
+
+  createdAt        DateTime @default(now())
+
+  updatedAt        DateTime @updatedAt
+
+  @@map("maintenance_logs")
+}
+
+//////////////////////////////////////////////////////
+// FUEL LOGS
+//////////////////////////////////////////////////////
+
+model FuelLog {
+
+  id              String     @id @default(uuid())
+
+  vehicleId       String
+
+  vehicle         Vehicle @relation(fields: [vehicleId], references: [id])
+
+  tripId          String?
+
+  trip            Trip? @relation(fields: [tripId], references: [id])
+
+  liters          Decimal
+
+  cost            Decimal
+
+  date            DateTime @default(now())
+
+  createdAt       DateTime @default(now())
+
+  updatedAt       DateTime @updatedAt
+
+  @@map("fuel_logs")
+}
+
+//////////////////////////////////////////////////////
+// EXPENSES
+//////////////////////////////////////////////////////
+
+model Expense {
+
+  id              String      @id @default(uuid())
+
+  vehicleId       String
+
+  vehicle         Vehicle @relation(fields: [vehicleId], references: [id])
+
+  type            ExpenseType
+
+  amount          Decimal
+
+  description     String?
+
+  date            DateTime @default(now())
+
+  createdAt       DateTime @default(now())
+
+  updatedAt       DateTime @updatedAt
+
+  @@map("expenses")
+}
