@@ -94,7 +94,7 @@ export function MaintenanceTable({ tickets, isLoading, userRole = "driver_user" 
                       {ticket.description}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-emerald-400 font-bold">
-                      ${Number(ticket.cost).toLocaleString()}
+                      ₹{Number(ticket.cost).toLocaleString()}
                     </td>
                     <td className="py-3.5 px-4">
                       {ticket.status === "active" ? (

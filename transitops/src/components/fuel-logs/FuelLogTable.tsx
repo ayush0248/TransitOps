@@ -81,10 +81,10 @@ export function FuelLogTable({ logs, isLoading }: FuelLogTableProps) {
                         {liters.toLocaleString()} L
                       </td>
                       <td className="py-3.5 px-4 font-mono text-emerald-400 font-bold">
-                        ${cost.toLocaleString()}
+                        ₹{cost.toLocaleString()}
                       </td>
                       <td className="py-3.5 px-4 font-mono text-zinc-400 text-xs">
-                        ${costPerLiter} / L
+                        ₹{costPerLiter} / L
                       </td>
                     </tr>
                   );

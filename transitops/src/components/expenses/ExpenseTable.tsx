@@ -113,7 +113,7 @@ export function ExpenseTable({ expenses, isLoading }: ExpenseTableProps) {
                       {exp.description || "—"}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-emerald-400 font-bold text-right">
-                      ${Number(exp.amount).toLocaleString()}
+                      ₹{Number(exp.amount).toLocaleString()}
                     </td>
                   </tr>
                 ))

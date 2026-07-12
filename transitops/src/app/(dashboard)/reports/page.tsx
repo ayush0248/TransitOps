@@ -6,7 +6,7 @@ import {
   BarChart3,
   Download,
   FileText,
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   Fuel,
   Wrench,
@@ -107,8 +107,8 @@ export default function ReportsPage() {
       doc.setFont("helvetica", "normal");
       doc.text(`Total Active Fleet Assets: ${utilization?.totalVehicles || reports.length}`, 40, 120);
       doc.text(`Fleet Utilization Ratio: ${utilization?.utilizationPercentage || 0}%`, 250, 120);
-      doc.text(`Total Operational Cost: $${totalOperating.toLocaleString()}`, 40, 138);
-      doc.text(`Total Estimated Revenue: $${totalRevenue.toLocaleString()}`, 250, 138);
+      doc.text(`Total Operational Cost: ₹${totalOperating.toLocaleString()}`, 40, 138);
+      doc.text(`Total Estimated Revenue: ₹${totalRevenue.toLocaleString()}`, 250, 138);
       doc.text(`Average Fleet ROI: ${avgROI}%`, 40, 156);
 
       // Table 1: Vehicle ROI & Cost Breakdown
@@ -119,11 +119,11 @@ export default function ReportsPage() {
       const tableData = reports.map((v) => [
         v.registrationNumber,
         v.type,
-        `$${v.totalFuelCost.toLocaleString()}`,
-        `$${v.totalMaintenanceCost.toLocaleString()}`,
-        `$${v.totalExpenseCost.toLocaleString()}`,
-        `$${v.totalOperatingCost.toLocaleString()}`,
-        `$${v.estimatedRevenue.toLocaleString()}`,
+        `₹${v.totalFuelCost.toLocaleString()}`,
+        `₹${v.totalMaintenanceCost.toLocaleString()}`,
+        `₹${v.totalExpenseCost.toLocaleString()}`,
+        `₹${v.totalOperatingCost.toLocaleString()}`,
+        `₹${v.estimatedRevenue.toLocaleString()}`,
         `${v.roiPercentage}%`,
       ]);
 
@@ -203,9 +203,9 @@ export default function ReportsPage() {
         <div className="bg-zinc-900/60 border border-zinc-800 p-5 rounded-2xl space-y-2 shadow-md">
           <div className="flex items-center justify-between text-zinc-400 text-xs font-mono uppercase font-bold">
             <span>Total Operational Cost</span>
-            <DollarSign className="w-4 h-4 text-amber-400" />
+            <IndianRupee className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-2xl font-black text-white font-mono">${totalOperatingCost.toLocaleString()}</div>
+          <div className="text-2xl font-black text-white font-mono">₹{totalOperatingCost.toLocaleString()}</div>
           <div className="text-[11px] text-zinc-400 flex items-center gap-2">
             <span className="text-emerald-400 font-semibold">100% Verified</span> across all log modules
           </div>
@@ -284,11 +284,11 @@ export default function ReportsPage() {
                       <span>{r.registrationNumber}</span>
                     </td>
                     <td className="py-4 px-5 font-mono text-xs text-zinc-300 uppercase">{r.type}</td>
-                    <td className="py-4 px-5 font-mono text-amber-400/90">${r.totalFuelCost.toLocaleString()}</td>
-                    <td className="py-4 px-5 font-mono text-rose-400/90">${r.totalMaintenanceCost.toLocaleString()}</td>
-                    <td className="py-4 px-5 font-mono text-cyan-400/90">${r.totalExpenseCost.toLocaleString()}</td>
-                    <td className="py-4 px-5 font-mono font-bold text-white">${r.totalOperatingCost.toLocaleString()}</td>
-                    <td className="py-4 px-5 font-mono text-zinc-300">${r.estimatedRevenue.toLocaleString()}</td>
+                    <td className="py-4 px-5 font-mono text-amber-400/90">₹{r.totalFuelCost.toLocaleString()}</td>
+                    <td className="py-4 px-5 font-mono text-rose-400/90">₹{r.totalMaintenanceCost.toLocaleString()}</td>
+                    <td className="py-4 px-5 font-mono text-cyan-400/90">₹{r.totalExpenseCost.toLocaleString()}</td>
+                    <td className="py-4 px-5 font-mono font-bold text-white">₹{r.totalOperatingCost.toLocaleString()}</td>
+                    <td className="py-4 px-5 font-mono text-zinc-300">₹{r.estimatedRevenue.toLocaleString()}</td>
                     <td className="py-4 px-5 font-mono font-black text-right">
                       <span
                         className={`inline-block px-2.5 py-1 rounded-lg text-xs border ${

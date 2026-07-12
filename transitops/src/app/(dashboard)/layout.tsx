@@ -21,10 +21,13 @@ import {
   Users,
   Wrench,
   X,
+  ShieldCheck,
+  Truck,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "Dashboard Overview", href: "/dashboard", icon: Grid, roles: ["all"] },
+  { label: "Access & Team Management", href: "/team", icon: ShieldCheck, roles: ["fleet_manager"] },
   { label: "Safety Audit Center", href: "/safety", icon: ShieldAlert, roles: ["fleet_manager", "safety_officer"] },
   { label: "Fleet Vehicles", href: "/vehicles", icon: Car, roles: ["fleet_manager", "driver_user", "financial_analyst", "safety_officer"] },
   { label: "Drivers & Compliance", href: "/drivers", icon: Users, roles: ["fleet_manager", "safety_officer", "driver_user"] },
@@ -48,13 +51,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[#121214] text-zinc-100 flex flex-col lg:flex-row">
       {/* Mobile Topbar */}
       <header className="lg:hidden bg-zinc-900/90 border-b border-zinc-800/80 p-4 sticky top-0 z-40 backdrop-blur-md flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-amber-600/10 border border-amber-600/30 flex items-center justify-center text-amber-500">
-            <Grid className="w-5 h-5" />
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+            <Truck className="w-4 h-4 text-black stroke-[2.5]" />
           </div>
           <div>
-            <span className="font-black tracking-tight text-white font-mono text-lg">TransitOps</span>
-            <span className="block text-[10px] text-amber-400 font-mono uppercase">{roleLabel}</span>
+            <span className="block font-black tracking-tight text-white text-lg leading-none">TransitOps</span>
+            <span className="block text-[10px] text-amber-500/80 uppercase tracking-widest font-bold mt-0.5">{roleLabel}</span>
           </div>
         </div>
         <button
@@ -74,17 +77,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-6">
           {/* Brand Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-amber-600/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
-              <Grid className="w-6 h-6" />
+            <div className="w-12 h-12 shrink-0 rounded-xl bg-amber-500 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+              <Truck className="w-6 h-6 text-black stroke-[2.5]" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold tracking-tight text-white font-mono text-xl">TransitOps</span>
-                <span className="text-[9px] font-bold bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-mono border border-amber-500/30">
-                  RBAC
-                </span>
-              </div>
-              <p className="text-[11px] text-zinc-400 font-sans">Transport Operations OS</p>
+              <h1 className="text-2xl font-black text-white tracking-tight leading-none">TransitOps</h1>
+              <p className="text-xs text-amber-500/80 uppercase tracking-widest font-bold mt-1">OS Platform</p>
             </div>
           </div>
 
