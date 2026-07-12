@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return json.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: { user: { name: any; role: string; }; }) => {
       toast.success(`Welcome back, ${data.user.name}!`);
       queryClient.setQueryData(["auth", "me"], data.user);
       queryClient.invalidateQueries({ queryKey: ["auth"] });
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return json.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: { user: { name: any; role: string; }; }) => {
       toast.success(`Account created! Welcome, ${data.user.name}.`);
       queryClient.setQueryData(["auth", "me"], data.user);
       queryClient.invalidateQueries({ queryKey: ["auth"] });
