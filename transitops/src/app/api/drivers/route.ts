@@ -3,6 +3,7 @@ import db from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/response";
 import { driverSchema } from "@/lib/validations";
 import { getAuthUser } from "@/lib/auth";
+import { hashPassword } from "@/lib/bcrypt";
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +33,44 @@ export async function POST(request: NextRequest) {
       return sendError(errorMessage, "VALIDATION_ERROR", 400, validationResult.error.flatten());
     }
 
-    const newDriver = await db.driver.create({
-      data: validationResult.data,
-    });
+    const { loginEmail, loginPassword, ...driverData } = validationResult.data;
+
+    let newDriver;
+
+    if (loginEmail && loginPassword) {
+      // Check if email already exists
+      const existingUser = await db.user.findUnique({
+        where: { email: loginEmail.toLowerCase() },
+      });
+
+      if (existingUser) {
+        return sendError("A user with this login email already exists.", "USER_EXISTS", 409);
+      }
+
+      const passwordHash = await hashPassword(loginPassword);
+
+      // Create both within a transaction
+      newDriver = await db.$transaction(async (tx) => {
+        const driver = await tx.driver.create({
+          data: driverData,
+        });
+
+        await tx.user.create({
+          data: {
+            name: driverData.name,
+            email: loginEmail.toLowerCase(),
+            passwordHash,
+            role: "driver_user",
+          },
+        });
+
+        return driver;
+      });
+    } else {
+      newDriver = await db.driver.create({
+        data: driverData,
+      });
+    }
 
     return sendSuccess(newDriver, "Driver registered successfully.", 201);
   } catch (error: any) {

@@ -35,6 +35,8 @@ export const driverSchema = z.object({
   contactNumber: z.string().optional(),
   safetyScore: z.number().min(0).max(100).default(100),
   status: z.enum(["available", "on_trip", "off_duty", "suspended"]).default("available"),
+  loginEmail: z.string().email("Invalid email").optional().or(z.literal('')),
+  loginPassword: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal('')),
 });
 
 export const tripSchema = z.object({

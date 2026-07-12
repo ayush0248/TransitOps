@@ -25,6 +25,8 @@ export interface CreateDriverPayload {
   contactNumber?: string;
   safetyScore?: number;
   status?: "available" | "on_trip" | "off_duty" | "suspended";
+  loginEmail?: string;
+  loginPassword?: string;
 }
 
 export interface UpdateDriverPayload {

@@ -16,6 +16,8 @@ const driverFormSchema = z.object({
   contactNumber: z.string().optional(),
   safetyScore: z.coerce.number().min(0).max(100),
   status: z.enum(["available", "on_trip", "off_duty", "suspended"]),
+  loginEmail: z.string().email("Invalid email").optional().or(z.literal('')),
+  loginPassword: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal('')),
 });
 
 type DriverFormInput = z.infer<typeof driverFormSchema>;
@@ -48,6 +50,8 @@ export function DriverFormModal({ isOpen, onClose, driverToEdit }: DriverFormMod
       contactNumber: "",
       safetyScore: 100,
       status: "available",
+      loginEmail: "",
+      loginPassword: "",
     },
   });
 
@@ -71,6 +75,8 @@ export function DriverFormModal({ isOpen, onClose, driverToEdit }: DriverFormMod
         contactNumber: "",
         safetyScore: 100,
         status: "available",
+        loginEmail: "",
+        loginPassword: "",
       });
     }
   }, [driverToEdit, reset, isOpen]);
@@ -101,6 +107,8 @@ export function DriverFormModal({ isOpen, onClose, driverToEdit }: DriverFormMod
           contactNumber: data.contactNumber || undefined,
           safetyScore: data.safetyScore,
           status: data.status,
+          loginEmail: data.loginEmail || undefined,
+          loginPassword: data.loginPassword || undefined,
         });
       }
       onClose();
@@ -253,6 +261,45 @@ export function DriverFormModal({ isOpen, onClose, driverToEdit }: DriverFormMod
             </select>
             {errors.status && <p className="text-xs text-red-400">{errors.status.message}</p>}
           </div>
+
+          {!isEditing && (
+            <>
+              <div className="my-4 h-px bg-zinc-800/80" />
+              <div className="mb-2">
+                <h4 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-500" />
+                  Create Driver Login Access (Optional)
+                </h4>
+                <p className="text-[11px] text-zinc-400 font-sans mt-1">Provide login credentials to grant this driver access to the portal.</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-950/40 p-4 rounded-xl border border-zinc-800/60">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Login Email
+                  </label>
+                  <input
+                    {...register("loginEmail")}
+                    type="email"
+                    placeholder="driver@transitops.in"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
+                  />
+                  {errors.loginEmail && <p className="text-xs text-red-400">{errors.loginEmail.message}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Temporary Password
+                  </label>
+                  <input
+                    {...register("loginPassword")}
+                    type="password"
+                    placeholder="••••••••"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
+                  />
+                  {errors.loginPassword && <p className="text-xs text-red-400">{errors.loginPassword.message}</p>}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Business Rule Notice Note */}
           <div className="p-3.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 text-xs text-zinc-400 space-y-1">
