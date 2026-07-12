@@ -77,25 +77,37 @@ export default function ReportsPage() {
   const downloadPDF = () => {
     try {
       const doc = new jsPDF("p", "pt", "a4");
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
 
-      // Title & Header
-      doc.setFillColor(24, 24, 27); // zinc-900
-      doc.rect(0, 0, doc.internal.pageSize.getWidth(), 70, "F");
+      // --- 1. Header Banner ---
+      doc.setFillColor(18, 18, 20); // Dark background
+      doc.rect(0, 0, pageWidth, 90, "F");
 
-      doc.setTextColor(245, 158, 11); // amber-500
-      doc.setFontSize(22);
+      // Brand text
+      doc.setTextColor(245, 158, 11); // Amber
+      doc.setFontSize(26);
       doc.setFont("helvetica", "bold");
-      doc.text("TransitOps — Financial & Fleet Audit Report", 40, 42);
+      doc.text("TransitOps", 40, 45);
 
-      doc.setFontSize(10);
-      doc.setTextColor(212, 212, 216);
-      doc.text(`Generated Date: ${new Date().toLocaleDateString()} | Role: Financial Analyst`, 40, 58);
-
-      // Summary Box
-      doc.setTextColor(0, 0, 0);
+      // Subtitle / Report Name
+      doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("Financial & Fleet Audit Report", 40, 65);
+
+      // Metadata on the right
+      doc.setFontSize(9);
+      doc.setTextColor(161, 161, 170); // zinc-400
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 40, 40, { align: "right" });
+      doc.text(`Role: Financial Analyst`, pageWidth - 40, 55, { align: "right" });
+      doc.text(`Doc ID: TO-FIN-${Math.floor(Math.random() * 10000)}`, pageWidth - 40, 70, { align: "right" });
+
+      // --- 2. Executive Summary ---
+      doc.setTextColor(24, 24, 27); // zinc-900
+      doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
-      doc.text("1. Executive Summary & KPIs", 40, 100);
+      doc.text("Executive Summary", 40, 130);
 
       const totalOperating = reports.reduce((acc, curr) => acc + curr.totalOperatingCost, 0);
       const totalRevenue = reports.reduce((acc, curr) => acc + curr.estimatedRevenue, 0);
@@ -103,49 +115,115 @@ export default function ReportsPage() {
         ? (reports.reduce((acc, curr) => acc + curr.roiPercentage, 0) / reports.length).toFixed(2)
         : "0.00";
 
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Total Active Fleet Assets: ${utilization?.totalVehicles || reports.length}`, 40, 120);
-      doc.text(`Fleet Utilization Ratio: ${utilization?.utilizationPercentage || 0}%`, 250, 120);
-      doc.text(`Total Operational Cost: ₹${totalOperating.toLocaleString()}`, 40, 138);
-      doc.text(`Total Estimated Revenue: ₹${totalRevenue.toLocaleString()}`, 250, 138);
-      doc.text(`Average Fleet ROI: ${avgROI}%`, 40, 156);
+      // Summary Box Background
+      doc.setFillColor(244, 244, 245); // zinc-100
+      doc.roundedRect(40, 145, pageWidth - 80, 70, 6, 6, "F");
 
-      // Table 1: Vehicle ROI & Cost Breakdown
-      doc.setFontSize(14);
+      // Column 1
+      doc.setFontSize(10);
+      doc.setTextColor(113, 113, 122); // zinc-500
+      doc.setFont("helvetica", "normal");
+      doc.text("Total Active Assets", 60, 165);
       doc.setFont("helvetica", "bold");
-      doc.text("2. Vehicle Financial ROI & Cost Breakdown", 40, 190);
+      doc.setTextColor(24, 24, 27);
+      doc.text(`${utilization?.totalVehicles || reports.length}`, 60, 185);
+
+      // Column 2
+      doc.setFontSize(10);
+      doc.setTextColor(113, 113, 122);
+      doc.setFont("helvetica", "normal");
+      doc.text("Fleet Utilization", 180, 165);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(245, 158, 11);
+      doc.text(`${utilization?.utilizationPercentage || 0}%`, 180, 185);
+
+      // Column 3
+      doc.setFontSize(10);
+      doc.setTextColor(113, 113, 122);
+      doc.setFont("helvetica", "normal");
+      doc.text("Operating Cost", 300, 165);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(225, 29, 72); // rose-600
+      doc.text(`Rs. ${totalOperating.toLocaleString()}`, 300, 185);
+
+      // Column 4
+      doc.setFontSize(10);
+      doc.setTextColor(113, 113, 122);
+      doc.setFont("helvetica", "normal");
+      doc.text("Average ROI", 440, 165);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(16, 185, 129); // emerald-500
+      doc.text(`${avgROI}%`, 440, 185);
+
+      // --- 3. Table Section ---
+      doc.setTextColor(24, 24, 27);
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text("Vehicle Financial Ledger", 40, 255);
 
       const tableData = reports.map((v) => [
         v.registrationNumber,
         v.type,
-        `₹${v.totalFuelCost.toLocaleString()}`,
-        `₹${v.totalMaintenanceCost.toLocaleString()}`,
-        `₹${v.totalExpenseCost.toLocaleString()}`,
-        `₹${v.totalOperatingCost.toLocaleString()}`,
-        `₹${v.estimatedRevenue.toLocaleString()}`,
+        `Rs. ${v.totalFuelCost.toLocaleString()}`,
+        `Rs. ${v.totalMaintenanceCost.toLocaleString()}`,
+        `Rs. ${v.totalExpenseCost.toLocaleString()}`,
+        `Rs. ${v.totalOperatingCost.toLocaleString()}`,
+        `Rs. ${v.estimatedRevenue.toLocaleString()}`,
         `${v.roiPercentage}%`,
       ]);
 
       autoTable(doc, {
-        startY: 205,
-        head: [["Reg No", "Type", "Fuel", "Maint", "Expenses", "Total Cost", "Revenue", "ROI (%)"]],
+        startY: 270,
+        head: [["Asset / Reg No", "Type", "Fuel", "Maintenance", "Expenses", "Total Cost", "Est. Revenue", "ROI"]],
         body: tableData,
-        theme: "grid",
-        headStyles: { fillColor: [245, 158, 11], textColor: [0, 0, 0], fontStyle: "bold" },
-        styles: { fontSize: 9, cellPadding: 6 },
+        theme: "striped",
+        headStyles: {
+          fillColor: [24, 24, 27],
+          textColor: [255, 255, 255],
+          fontStyle: "bold",
+          fontSize: 10,
+          halign: "left",
+        },
+        bodyStyles: {
+          fontSize: 9,
+          textColor: [63, 63, 70],
+        },
+        alternateRowStyles: {
+          fillColor: [250, 250, 250],
+        },
+        columnStyles: {
+          7: { fontStyle: "bold", textColor: [16, 185, 129] }, // ROI column colored green-ish
+        },
+        margin: { left: 40, right: 40 },
+        willDrawCell: function (data) {
+          // Color ROI dynamically based on value
+          if (data.section === "body" && data.column.index === 7) {
+            const rawVal = reports[data.row.index]?.roiPercentage;
+            if (rawVal < 0) {
+              doc.setTextColor(225, 29, 72); // rose-600
+            } else {
+              doc.setTextColor(16, 185, 129); // emerald-500
+            }
+          }
+        },
       });
 
-      // Footer
+      // --- 4. Footer & Page Numbers ---
       const pageCount = (doc as any).internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFontSize(8);
-        doc.setTextColor(150);
+        doc.setTextColor(161, 161, 170); // zinc-400
         doc.text(
-          `TransitOps Platform - Confidential Financial Audit Report — Page ${i} of ${pageCount}`,
+          `TransitOps Platform - Confidential Financial Audit Report`,
           40,
-          doc.internal.pageSize.getHeight() - 30
+          pageHeight - 30
+        );
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          pageWidth - 40,
+          pageHeight - 30,
+          { align: "right" }
         );
       }
 
