@@ -72,7 +72,29 @@ export default function DashboardOverviewPage() {
       {/* Quick Navigation Cards */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-white font-serif">Quick Module Navigation</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link
+            href="/reports"
+            className="p-5 rounded-xl bg-gradient-to-br from-amber-500/15 to-zinc-900/80 hover:bg-zinc-900 border border-amber-500/40 hover:border-amber-400 transition group space-y-2 shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <BarChart3 className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-amber-400 transition">ROI & Financial Analytics</h3>
+            <p className="text-xs text-zinc-400">Compute formula <code className="text-amber-300">[Rev - Cost] / Acq</code>, audit fuel vs maintenance ledgers, and download official multi-table PDF.</p>
+          </Link>
+
+          <Link
+            href="/expenses"
+            className="p-5 rounded-xl bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 transition group space-y-2 shadow-md"
+          >
+            <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <Receipt className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-amber-400 transition">Fleet Expenses & Tolls</h3>
+            <p className="text-xs text-zinc-400">Record itemized toll plaza fees, weighbridge receipts, and roadside repairs with PDF ledger export.</p>
+          </Link>
+
           <Link
             href="/safety"
             className="p-5 rounded-xl bg-gradient-to-br from-amber-500/10 to-zinc-900/60 hover:bg-zinc-900 border border-amber-500/30 hover:border-amber-500 transition group space-y-2 shadow-lg"

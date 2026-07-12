@@ -28,7 +28,7 @@ const NAV_ITEMS = [
   { label: "Safety Audit Center", href: "/safety", icon: ShieldAlert, roles: ["fleet_manager", "safety_officer"] },
   { label: "Fleet Vehicles", href: "/vehicles", icon: Car, roles: ["fleet_manager", "driver_user", "financial_analyst", "safety_officer"] },
   { label: "Drivers & Compliance", href: "/drivers", icon: Users, roles: ["fleet_manager", "safety_officer", "driver_user"] },
-  { label: "Trip Dispatching", href: "/trips", icon: ChevronRight, roles: ["fleet_manager", "driver_user", "safety_officer"] },
+  { label: "Trip Dispatching", href: "/trips", icon: ChevronRight, roles: ["fleet_manager", "driver_user", "safety_officer", "financial_analyst"] },
   { label: "Maintenance Shop", href: "/maintenance", icon: Wrench, roles: ["fleet_manager", "driver_user", "safety_officer", "financial_analyst"] },
   { label: "Fuel Consumption", href: "/fuel-logs", icon: Fuel, roles: ["fleet_manager", "financial_analyst", "driver_user"] },
   { label: "Expenses & Tolls", href: "/expenses", icon: Receipt, roles: ["fleet_manager", "financial_analyst", "driver_user"] },
